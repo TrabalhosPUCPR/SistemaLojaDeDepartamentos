@@ -1,3 +1,5 @@
+# QUERIES DE EXEMPLO
+
 # 1 Quantos funcionários trabalham em uma loja
 SELECT COUNT(*) as quantidade FROM funcionario_loja
 WHERE ID_loja = 1
@@ -40,7 +42,7 @@ SELECT departamento.nome, COUNT(*) as quantidade FROM departamento, produto
 WHERE departamento.ID_dpto = produto.ID_dpto 
 GROUP BY nome
 
-# 9 Quais produtos devem ser trocados por passar da data de validade (PERGUNTA ERA: Quando que será necessário trocar produtos que passaram da data de validade )
+# 9 Quais produtos devem ser trocados por passar da data de validade
 SELECT nome, validade FROM produto
 WHERE CURRENT_DATE() > validade 
 
