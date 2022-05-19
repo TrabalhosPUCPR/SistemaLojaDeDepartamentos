@@ -19,8 +19,8 @@ WHERE descricao = "estoqueiro"
 
 # 5 Qual loja tem a maior quantidade de compras durante todo seu tempo de vida ou em uma data determinada
 SELECT endereco, COUNT(*) as quantidade FROM loja
-INNER JOIN compras ON compras.ID_loja = 1
-WHERE compras.data_compra BETWEEN '2020-01-01' AND '2022-04-10' # so comentar essa linha para mostrar de todo o seu tempo de vida
+INNER JOIN compras ON compras.ID_loja = loja.ID_loja
+WHERE compras.data_compra BETWEEN '2020-01-01' AND '2022-04-10' AND loja.ID_loja = 1# so comentar essa linha para mostrar de todo o seu tempo de vida
 GROUP BY endereco 
 ORDER BY quantidade DESC 
 LIMIT 1
