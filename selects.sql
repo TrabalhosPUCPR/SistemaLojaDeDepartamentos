@@ -106,7 +106,6 @@ WHERE produto.nome = "cadeira gamer"
 ORDER BY valor ASC
 LIMIT 1
 
-
 # 20 Quantos clientes foram cadastrados no sistema
 SELECT COUNT(*) as quantidade FROM cliente
 
