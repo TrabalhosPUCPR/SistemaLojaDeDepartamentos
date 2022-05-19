@@ -32,7 +32,7 @@ GROUP BY departamento.nome
 ORDER BY total DESC
 LIMIT 1
 
-# 7 Em quais locais possui uma loja com o departamento em busca
+# 7 Em quais locais possui uma loja com um departamento especifico
 SELECT endereco FROM loja 
 INNER JOIN loja_departamento on loja.ID_loja = loja_departamento.ID_loja 
 WHERE loja_departamento.ID_dpto = 3
@@ -42,19 +42,19 @@ SELECT departamento.nome, COUNT(*) as quantidade FROM departamento, produto
 WHERE departamento.ID_dpto = produto.ID_dpto 
 GROUP BY nome
 
-# 9 Quais produtos devem ser trocados por passar da data de validade
+# 9 Quais produtos devem ser trocados por ter passado da data de validade
 SELECT nome, validade FROM produto
 WHERE CURRENT_DATE() > validade 
 
 # 10 Quantos produtos foram vendidos durante uma data
-SELECT COUNT(*) as quantidade, SUM(compras.qntd) as quantidade_total FROM produto
+SELECT COUNT(*) as quantidade_produtos_unico, SUM(compras.qntd) as quantidade_total FROM produto
 INNER JOIN compras ON produto.ID_prod = compras.ID_prod
 WHERE compras.data_compra BETWEEN '2022-01-01' AND '2022-05-05'
 
 # 11 Qual produto é o mais vendido de todos ou de apenas um departamento
 SELECT produto.nome, SUM(compras.qntd) as total FROM produto
 INNER JOIN compras ON produto.ID_prod = compras.ID_prod 
-WHERE produto.ID_dpto = 1
+WHERE produto.ID_dpto = 1 # so tirar essa linha para ver de todos
 GROUP BY produto.nome 
 ORDER BY total DESC 
 LIMIT 1
@@ -71,10 +71,10 @@ INNER JOIN departamento ON produto.ID_dpto = departamento.ID_dpto
 INNER JOIN loja ON compras.ID_loja = loja.ID_loja 
 WHERE compras.data_compra BETWEEN '2022-02-01' AND '2022-03-01' AND loja.ID_loja = 1 AND departamento.nome = "eletronicos"
 
-# 14 Quanto é gasto no total com fornecedores
+# 14 Quanto foi gasto no total com fornecedores
 SELECT sum(valor_entrega) as total FROM produto_fornecedor
 
-# 15 Quantas compras são feitas em uma data determinada
+# 15 Quantas compras foram feitas em uma data determinada
 SELECT COUNT(*) as total FROM compras
 WHERE data_compra BETWEEN '2022-02-01' AND '2022-02-31'
 
@@ -83,7 +83,7 @@ SELECT cliente.nome, produto.nome, loja.endereco, compras.data_compra, compras.q
 INNER JOIN compras ON cliente.ID_cli = compras.ID_cli
 INNER JOIN produto ON produto.ID_prod = compras.ID_prod 
 INNER JOIN loja ON loja.ID_loja = compras.ID_loja 
-WHERE cliente.nome = "leo" 
+WHERE cliente.nome = "leo" AND compras.data_compra BETWEEN '2020-01-01' AND '2022-01-01'
 
 # 17 Qual o local com a maior quantidade de clientes em geral
 SELECT COUNT(*) as quantidade, endereco FROM cliente
@@ -95,10 +95,10 @@ LIMIT 1
 SELECT SUM(produto.valor*compras.qntd) as valor FROM compras
 INNER JOIN produto ON compras.ID_prod = produto.ID_prod 
 INNER JOIN cliente ON cliente.ID_cli = compras.ID_cli 
-WHERE cliente.nome = "leo"
+WHERE cliente.nome = "leo" AND data_compra BETWEEN '2021-02-01' AND '2022-02-31'
 GROUP BY cliente.nome 
 
-# 19 Qual dos fornecedores tem a melhor oferta em relação a quantidade de produtos com o preço para o fornecimento.
+# 19 Qual dos fornecedores tem a melhor oferta em relação a quantidade e preço do produto para o fornecimento.
 SELECT fornecedor.nome as nome_fornecedor, produto_fornecedor.valor_entrega/produto_fornecedor.qntd as valor FROM produto_fornecedor
 INNER JOIN produto ON produto_fornecedor.ID_prod = produto.ID_prod 
 INNER JOIN fornecedor ON produto_fornecedor.ID_for = fornecedor.ID_for 
