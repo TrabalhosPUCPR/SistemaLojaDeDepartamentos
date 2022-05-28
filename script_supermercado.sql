@@ -164,7 +164,8 @@ INSERT INTO funcionario_loja VALUES
 
 # adicionando departamentos:
 #(id, nome)
-INSERT INTO departamento VALUES (1, "eletronicos"),
+INSERT INTO departamento VALUES 
+(1, "eletronicos"),
 (2, "brinquedos"),
 (3, "vestuarios"),
 (4, "mobiliario"),
@@ -179,7 +180,7 @@ INSERT INTO loja_departamento VALUES
 (2, 3);
 
 # adicionando produtos:
-#(id, nome, valor, qntd, validade, ID_dep, tipo)
+#(id, nome, valor, qntd, validade, ID_dep)
 INSERT INTO produto VALUES 
 (1, "televisao 4k 80 polegadas OLED LG", 1000, 15, NULL, 1),
 (2, "Earbuds bluetooth", 120, 22, NULL, 1),
@@ -189,7 +190,7 @@ INSERT INTO produto VALUES
 (6, "Cadeira gamer", 980, 5, NULL, 4),
 (7, "Banco de plastico", 39, 25, NULL, 4),
 (8, "Pasta de amendoim", 9, 51, "2025-01-01", 5),
-(9, "Gelatina de morando", 9, 30, "2025-01-01", 5),
+(9, "Gelatina de morango", 9, 30, "2025-01-01", 5),
 (10, "Regata branca", 20, 25, NULL, 3);
 
 # adicionando as compras que os clientes fizeram:

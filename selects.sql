@@ -20,7 +20,7 @@ WHERE descricao = "estoqueiro";
 # 5 Qual loja tem a maior quantidade de compras durante todo seu tempo de vida ou em uma data determinada
 SELECT endereco, COUNT(*) as quantidade FROM loja
 INNER JOIN compras ON compras.ID_loja = loja.ID_loja
-WHERE compras.data_compra BETWEEN '2020-01-01' AND '2022-04-10' AND loja.ID_loja = 1# so comentar essa linha para mostrar de todo o seu tempo de vida
+WHERE compras.data_compra BETWEEN '2020-01-01' AND '2022-04-10'# so comentar essa linha para mostrar de todo o seu tempo de vida
 GROUP BY endereco 
 ORDER BY quantidade DESC 
 LIMIT 1;
@@ -34,12 +34,12 @@ LIMIT 1;
 
 # 7 Em quais locais possui uma loja com um departamento especifico
 SELECT endereco FROM loja 
-INNER JOIN loja_departamento on loja.ID_loja = loja_departamento.ID_loja 
+INNER JOIN loja_departamento ON loja.ID_loja = loja_departamento.ID_loja 
 WHERE loja_departamento.ID_dpto = 3;
 
 # 8 Quantos produtos cada departamento tem a venda (cada produto diferente, nao adiciona a quantidade que tem de cada)
-SELECT departamento.nome, COUNT(*) as quantidade FROM departamento, produto
-WHERE departamento.ID_dpto = produto.ID_dpto 
+SELECT departamento.nome, COUNT(*) as quantidade FROM departamento
+INNER JOIN produto ON departamento.ID_dpto = produto.ID_dpto 
 GROUP BY nome;
 
 # 9 Quais produtos devem ser trocados por ter passado da data de validade
@@ -60,7 +60,7 @@ ORDER BY total DESC
 LIMIT 1;
 
 # 12 Qual é o lucro de um produto em relação ao preço de venda e o preço para o fornecimento
-SELECT produto.nome, produto.valor*produto.qntd-produto_fornecedor.valor_entrega FROM produto, produto_fornecedor
+SELECT produto.nome, produto.valor*produto.qntd-produto_fornecedor.valor_entrega as Lucro FROM produto, produto_fornecedor
 WHERE produto.ID_prod = 1
 GROUP BY produto.nome;
 
@@ -78,7 +78,7 @@ SELECT sum(valor_entrega) as total FROM produto_fornecedor;
 SELECT COUNT(*) as quantidade FROM fornecedor;
 
 # 16 Quais as compras que um cliente fez numa data determinada
-SELECT cliente.nome, produto.nome, loja.endereco, compras.data_compra, compras.qntd FROM cliente
+SELECT cliente.nome as Nome_cliente, produto.nome as Nome_produto, loja.endereco, compras.data_compra, compras.qntd FROM cliente
 INNER JOIN compras ON cliente.ID_cli = compras.ID_cli
 INNER JOIN produto ON produto.ID_prod = compras.ID_prod 
 INNER JOIN loja ON loja.ID_loja = compras.ID_loja 
@@ -90,7 +90,7 @@ GROUP BY endereco
 ORDER BY quantidade DESC 
 LIMIT 1;
 
-# 18 Quanto que um cliente gastou em uma determinada data
+# 18 Quanto que um cliente gastou durante determinada data
 SELECT SUM(produto.valor*compras.qntd) as valor FROM compras
 INNER JOIN produto ON compras.ID_prod = produto.ID_prod 
 INNER JOIN cliente ON cliente.ID_cli = compras.ID_cli 
