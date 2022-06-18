@@ -18,10 +18,11 @@ SELECT COUNT(*) as quantidade FROM cargo
 WHERE descricao = "estoqueiro";
 
 # 5 Qual loja tem a maior quantidade de compras durante todo seu tempo de vida ou em uma data determinada
-SELECT endereco, COUNT(*) as quantidade FROM loja
+SELECT rua, bairro, numero, CEP, municipio.nome as Municipio, COUNT(*) as quantidade FROM loja
 INNER JOIN compras ON compras.ID_loja = loja.ID_loja
-WHERE compras.data_compra BETWEEN '2020-01-01' AND '2022-04-10'# so comentar essa linha para mostrar de todo o seu tempo de vida
-GROUP BY endereco 
+INNER JOIN municipio ON municipio.ID_mun = loja.ID_mun 
+WHERE compras.data_compra BETWEEN '2020-01-01' AND '2022-04-10' AND loja.ID_loja = 1# so comentar essa linha para mostrar de todo o seu tempo de vida
+GROUP BY rua
 ORDER BY quantidade DESC 
 LIMIT 1;
 
@@ -33,13 +34,14 @@ ORDER BY total DESC
 LIMIT 1;
 
 # 7 Em quais locais possui uma loja com um departamento especifico
-SELECT endereco FROM loja 
-INNER JOIN loja_departamento ON loja.ID_loja = loja_departamento.ID_loja 
+SELECT rua, bairro, numero, CEP, municipio.nome as Municipio FROM loja 
+INNER JOIN loja_departamento on loja.ID_loja = loja_departamento.ID_loja 
+INNER JOIN municipio ON municipio.ID_mun = loja.ID_mun 
 WHERE loja_departamento.ID_dpto = 3;
 
 # 8 Quantos produtos cada departamento tem a venda (cada produto diferente, nao adiciona a quantidade que tem de cada)
-SELECT departamento.nome, COUNT(*) as quantidade FROM departamento
-INNER JOIN produto ON departamento.ID_dpto = produto.ID_dpto 
+SELECT departamento.nome, COUNT(*) as quantidade FROM departamento, produto
+WHERE departamento.ID_dpto = produto.ID_dpto 
 GROUP BY nome;
 
 # 9 Quais produtos devem ser trocados por ter passado da data de validade
@@ -60,7 +62,7 @@ ORDER BY total DESC
 LIMIT 1;
 
 # 12 Qual é o lucro de um produto em relação ao preço de venda e o preço para o fornecimento
-SELECT produto.nome, produto.valor*produto.qntd-produto_fornecedor.valor_entrega as Lucro FROM produto, produto_fornecedor
+SELECT produto.nome, produto.valor*produto.qntd-produto_fornecedor.valor_entrega FROM produto, produto_fornecedor
 WHERE produto.ID_prod = 1
 GROUP BY produto.nome;
 
@@ -78,22 +80,23 @@ SELECT sum(valor_entrega) as total FROM produto_fornecedor;
 SELECT COUNT(*) as quantidade FROM fornecedor;
 
 # 16 Quais as compras que um cliente fez numa data determinada
-SELECT cliente.nome as Nome_cliente, produto.nome as Nome_produto, loja.endereco, compras.data_compra, compras.qntd FROM cliente
-INNER JOIN compras ON cliente.ID_cli = compras.ID_cli
+SELECT cliente.nome, produto.nome, compras.data_compra, compras.qntd, loja.rua, loja.bairro, loja.numero, loja.CEP, municipio.nome as Municipio FROM cliente
+INNER JOIN compras ON cliente.CPF = compras.CPF_cli 
 INNER JOIN produto ON produto.ID_prod = compras.ID_prod 
 INNER JOIN loja ON loja.ID_loja = compras.ID_loja 
+INNER JOIN municipio ON municipio.ID_mun = loja.ID_mun
 WHERE cliente.nome = "leo" AND compras.data_compra BETWEEN '2020-01-01' AND '2022-01-01';
 
-# 17 Qual o local com a maior quantidade de clientes em geral
-SELECT COUNT(*) as quantidade, endereco FROM cliente
-GROUP BY endereco
+# 17 Qual o local com a maior quantidade de clientes em geral?
+SELECT COUNT(*) as quantidade, bairro FROM cliente
+GROUP BY bairro
 ORDER BY quantidade DESC 
 LIMIT 1;
 
-# 18 Quanto que um cliente gastou durante determinada data
+# 18 Quanto que um cliente gastou em uma determinada data
 SELECT SUM(produto.valor*compras.qntd) as valor FROM compras
 INNER JOIN produto ON compras.ID_prod = produto.ID_prod 
-INNER JOIN cliente ON cliente.ID_cli = compras.ID_cli 
+INNER JOIN cliente ON cliente.CPF = compras.CPF_cli
 WHERE cliente.nome = "leo" AND data_compra BETWEEN '2021-02-01' AND '2022-02-31'
 GROUP BY cliente.nome;
 
@@ -107,6 +110,26 @@ LIMIT 1;
 
 # 20 Quantos clientes foram cadastrados no sistema
 SELECT COUNT(*) as quantidade FROM cliente;
+
+# 21 Quais funcionarios que tem cargo X tem uma quantidade de dependente igual ou maior que Y
+SELECT funcionario.nome, COUNT(*) as qntd FROM funcionario
+INNER JOIN funcionario_dependente ON funcionario.ID_func = funcionario_dependente.ID_func
+INNER JOIN cargo ON funcionario.cargo = cargo.ID_cargo AND cargo.descricao = "estoqueiro" # o ideial e pegar os funcionarios com o cargo X usando a chave mas pra visualiza melhor vou pegar pela descricao msm
+GROUP BY funcionario.nome 
+HAVING qntd >= 2;
+
+SELECT funcionario.nome, COUNT(*) as qntd FROM funcionario, cargo, funcionario_dependente
+WHERE cargo.descricao = "estoqueiro" AND funcionario_dependente.ID_func = funcionario.ID_func AND funcionario.cargo = cargo
+GROUP BY funcionario.nome 
+HAVING qntd >= 2;
+
+# 22 Quais as loja que nao possuem menos de 2 departamentos
+SELECT ID_loja, municipio.nome as Municipio, rua, bairro, numero, CEP FROM loja, municipio
+WHERE ID_loja NOT IN(SELECT ID_loja as qntd  FROM loja_departamento GROUP BY ID_loja HAVING COUNT(*) < 2) AND loja.ID_mun = municipio.ID_mun;
+
+
+
+
 
 
 
